@@ -1,0 +1,113 @@
+namespace Intermediate1
+{
+    class Listofstudents
+    {
+        public string nameofdiscipline;
+        public string namestudent;
+        public string facnum { get; private set; }
+
+        public double grade { get;  private set; }
+
+        public override string ToString()
+        {
+
+            return namestudent + " " + nameofdiscipline + " " + grade;
+        }
+
+        public Listofstudents(string input)
+        {
+            input += "=>";
+            try
+            {
+                nameofdiscipline = InputHandle(ref input);
+                namestudent = InputHandle(ref input);
+                facnum = InputHandle(ref input);
+                grade = double.Parse(InputHandle(ref input));
+
+            }
+            catch (Exception)
+            { 
+            }
+        }
+        private string InputHandle(ref string input)
+        {
+            string output = "";
+            char[] raw = input.ToCharArray();
+            int i;
+            for (i = 0; !('=' == raw[i] || '>' == raw[i + 1]); ++i)
+            {
+                output += raw[i];
+            }
+
+            input = "";
+            for (int j = i + 2; j < raw.Length; j++)
+            {
+                input += raw[j];
+            }
+            return output;
+        }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string command = "";
+            Dictionary<string, Listofstudents> Lex = new Dictionary<string, Listofstudents>();
+
+
+            do
+            {
+                Console.WriteLine("Input:");
+                command = Console.ReadLine();
+                if (command.ToLower().Equals("end") || command.Equals(""))
+                {
+                    break;
+                }
+                Listofstudents l = new Listofstudents(command);
+                try
+                {
+                    Lex.Add(l.facnum, l);
+                }
+                catch (Exception)
+                {
+                    
+                }
+            } while (true);
+            ArrayList arr = new ArrayList();
+            foreach (var v in Lex)
+            {
+                arr.Add(v.Value);
+            }
+            Lex.Clear();
+            Listofstudents[] list = sort(arr);
+            foreach(var v in list)
+            {
+                Console.WriteLine(v.ToString()) ;
+
+            }
+        }
+
+        static Listofstudents[] sort(ArrayList list)
+        {
+            double max = -1;
+            var arr = new Listofstudents[list.Count];
+            for (int i = 0; i < arr.Length; ++i)
+            {
+                int rm = 0;
+                for (int j = 0; j < list.Count; ++j)
+                {
+                    if (((Listofstudents)list[j]).grade > max)
+                    {
+                        max = ((Listofstudents)list[j]).grade;
+                        rm = j;
+                    }
+                }
+                arr[i] = (Listofstudents)list[rm];
+                list.RemoveAt(rm);
+               
+            }
+            return arr;
+
+        }
+    }
+}
